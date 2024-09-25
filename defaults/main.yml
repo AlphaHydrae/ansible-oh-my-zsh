@@ -1,0 +1,5 @@
+---
+oh_my_zsh_dir: "{{ oh_my_zsh_user_home }}/.oh-my-zsh"
+oh_my_zsh_user: "{{ user }}"
+oh_my_zsh_user_home: "{{ host_user_homes }}/{{ user }}"
+oh_my_zsh_group: "{{ group | default(user) }}"

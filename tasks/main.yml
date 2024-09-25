@@ -1,0 +1,34 @@
+---
+
+- name: Check if Oh My ZSH is installed
+  stat:
+    path: "{{ oh_my_zsh_dir }}"
+  register: oh_my_zsh_dir_stat
+  changed_when: false
+  tags: [oh-my-zsh]
+
+- name: Install Oh My ZSH
+  block:
+    - name: Download the Oh My ZSH installation script
+      get_url:
+        url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+        dest: /tmp/oh-my-zsh-install.sh
+        owner: "{{ oh_my_zsh_user }}"
+        group: "{{ oh_my_zsh_group }}"
+        mode: 0700
+      tags: [oh-my-zsh]
+
+    - name: Run the Oh My ZSH installation script in unattended mode
+      shell: /tmp/oh-my-zsh-install.sh --unattended
+      environment:
+        KEEP_ZSHRC: "yes"
+      tags: [oh-my-zsh]
+
+  always:
+    - name: Remove the Oh My ZSH installation script
+      file:
+        path: /tmp/oh-my-zsh-install.sh
+        state: absent
+      tags: [oh-my-zsh]
+
+  when: oh_my_zsh_dir_stat.stat.exists == false
